@@ -1,39 +1,74 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // 🌟 핵심 수정: rootPath를 절대 경로(/) 대신 상대 경로로 정확히 계산 🌟
-
-    // 현재 URL의 경로 부분을 가져옵니다.
-    const path = window.location.pathname;
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>학습지·퀴즈 생성기</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="styles.css"></head>
+<body>
     
-    // 현재 경로의 깊이를 계산합니다. (폴더의 개수 - 1)
-    // 예: /index.html -> 1 레벨
-    // 예: /페이지/조편성/index.html -> 3 레벨
-    const depth = path.split('/').length - 1; 
+    <div class="app-wrap">
+        <div class="app-card">
+            <h1 class="app-title">학습지·퀴즈 생성기</h1>
+            <div class="app-grid">
+                <section class="controls">
+                    <div class="field">
+                        <label>학년</label>
+                        <select id="grade">
+                            <option value="1">1학년</option>
+                            <option value="2" selected>2학년</option>
+                            <option value="3">3학년</option>
+                            <option value="4">4학년</option>
+                            <option value="5">5학년</option>
+                            <option value="6">6학년</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>문항 수</label>
+                        <input id="count" type="number" min="4" max="120" step="2" value="20">
+                    </div>
+                    
+                    <fieldset class="field">
+                        <legend>문제 유형(복수 선택)</legend>
+                        <label><input type="checkbox" value="add" checked> 덧셈</label>
+                        <label><input type="checkbox" value="sub" checked> 뺄셈</label>
+                        <label><input type="checkbox" value="mul"> 곱셈(구구단)</label>
+                        <label><input type="checkbox" value="div"> 나눗셈(나머지 없음)</label>
+                    </fieldset>
+                    <div class="field">
+                        <label>난이도</label>
+                        <select id="level">
+                            <option value="easy">쉬움</option>
+                            <option value="normal" selected>보통</option>
+                            <option value="hard">어려움</option>
+                        </select>
+                    </div>
+                    <div class="btns">
+                        <button id="btn-generate">문제 생성</button>
+                        <button id="btn-answers" disabled>정답지 보기</button>
+                        <button id="btn-print" disabled>인쇄/ PDF 저장</button>
+                        <button id="btn-clear">지우기</button>
+                    </div>
+                    <details style="margin-top:8px;">
+                        <summary>사용 팁</summary>
+                        <ul>
+                            <li>브라우저의 “인쇄”에서 <b>“PDF로 저장”</b>을 선택하면 바로 PDF를 만들 수 있어요.</li>
+                            <li>같은 설정으로 다시 만들면 다른 문제가 생성됩니다(랜덤 시드).</li>
+                        </ul>
+                    </details>
+                </section>
 
-    let rootPath = './'; // 기본값 (루트 폴더 내의 index.html)
+                <section class="paper app-card">
+                    <div id="sheet" class="sheet" aria-live="polite">
+                        <p class="placeholder">왼쪽에서 설정을 고르고 <b>문제 생성</b>을 눌러주세요.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
 
-    // 만약 깊이가 3 이상 (예: 페이지/조편성/*)이면, 두 번 상위 폴더로 이동해야 함
-    if (depth >= 3) {
-        rootPath = '../../'; 
-    } 
-    // 만약 깊이가 2 (예: /페이지/*) 이라면, 한 번 상위 폴더로 이동해야 함
-    else if (depth === 2 && path.includes('/페이지/')) {
-        // 이 로직은 현재 폴더 구조상 필요 없지만, 다른 구조를 위해 남겨둡니다.
-        // 현재는 '페이지' 바로 밑에 파일이 없으므로 depth=3 로직이 주로 사용됨
-        rootPath = '../';
-    }
-
-
-    const navHTML = `
-        <nav>
-            <a href="${rootPath}index.html" class="logo">My Ocean View</a>
-            <ul>
-                <li><a href="${rootPath}index.html">홈</a></li>
-                <li><a href="${rootPath}페이지/조편성/index.html">조편성</a></li>
-                <li><a href="${rootPath}페이지/학습지/index.html">학습지</a></li>
-            </ul>
-        </nav>
-    `;
-
-    // body 태그의 가장 첫 번째 자식으로 네비게이션 추가
-    document.body.insertAdjacentHTML('afterbegin', navHTML);
-});
+    <script src="../../js/nav.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
