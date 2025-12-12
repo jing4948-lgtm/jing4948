@@ -1,16 +1,27 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // 현재 페이지가 루트(최상위)인지 하위 폴더인지 확인하여 경로 조정
-    // 간단하게 '../' 개수로 깊이를 판단하거나, 절대 경로(/)를 사용할 수 있습니다.
-    // 여기서는 GitHub Pages나 Live Server 환경을 고려해 상대 경로 로직을 씁니다.
+    // 🌟 핵심 수정: rootPath를 절대 경로(/) 대신 상대 경로로 정확히 계산 🌟
+
+    // 현재 URL의 경로 부분을 가져옵니다.
+    const path = window.location.pathname;
     
-    const isRoot = window.location.pathname.endsWith('index.html') && window.location.pathname.split('/').length < 3;
-    // 단순히 폴더 깊이에 따라 경로 접두사를 정합니다.
-    // 만약 잘 안 되면 아래 pathPrefix를 직접 수정하면 됩니다.
-    
-    // 이 스크립트가 실행되는 위치에 따라 경로 설정
-    // 루트 index.html에서 실행되면 '', 페이지/* 폴더에서 실행되면 '../../'
-    const isInSubfolder = window.location.href.includes('/페이지/'); 
-    const rootPath = isInSubfolder ? '../../' : './';
+    // 현재 경로의 깊이를 계산합니다. (폴더의 개수 - 1)
+    // 예: /index.html -> 1 레벨
+    // 예: /페이지/조편성/index.html -> 3 레벨
+    const depth = path.split('/').length - 1; 
+
+    let rootPath = './'; // 기본값 (루트 폴더 내의 index.html)
+
+    // 만약 깊이가 3 이상 (예: 페이지/조편성/*)이면, 두 번 상위 폴더로 이동해야 함
+    if (depth >= 3) {
+        rootPath = '../../'; 
+    } 
+    // 만약 깊이가 2 (예: /페이지/*) 이라면, 한 번 상위 폴더로 이동해야 함
+    else if (depth === 2 && path.includes('/페이지/')) {
+        // 이 로직은 현재 폴더 구조상 필요 없지만, 다른 구조를 위해 남겨둡니다.
+        // 현재는 '페이지' 바로 밑에 파일이 없으므로 depth=3 로직이 주로 사용됨
+        rootPath = '../';
+    }
+
 
     const navHTML = `
         <nav>
