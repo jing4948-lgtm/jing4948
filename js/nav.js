@@ -1,52 +1,49 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // 🌟🌟🌟 네비게이션 최종 안정화 코드 🌟🌟🌟
+    // 🌟🌟🌟 네비게이션 최종 해결 코드: Base Path를 이용한 절대 경로 구축 🌟🌟🌟
     
-    // 현재 URL의 호스트를 기준으로 프로젝트 루트 경로를 결정합니다.
     const path = window.location.pathname;
+    let basePath = '/'; // 기본값 (서버 루트)
+
+    // GitHub Pages 환경을 고려하여 최상위 저장소 이름을 basePath로 설정합니다.
+    // 현재 경로를 '/'로 나누고, 파일명과 빈 문자열을 제외한 배열을 만듭니다.
+    const pathSegments = path.split('/').filter(p => p.length > 0 && p !== 'index.html');
     
-    // index.html이 있는 프로젝트의 최상위 경로를 추출합니다.
-    // 예: /myrepo/페이지/조편성/index.html -> '/myrepo/'
-    // 이 로직은 GitHub Pages 환경을 고려하여 최상위 폴더명까지 포함합니다.
-    
-    let basePath = '';
-    const pathSegments = path.split('/').filter(p => p.length > 0);
-    
+    // 만약 pathSegments에 내용이 있다면 (예: ['myrepo', '페이지', '조편성']),
+    // 첫 번째 요소(대부분 저장소 이름)를 basePath에 포함시킵니다.
     if (pathSegments.length > 0) {
-        // GitHub Pages 환경에서는 보통 첫 번째 세그먼트가 저장소 이름입니다.
-        // 하지만 로컬 환경에서는 단순히 '/'만 필요합니다.
+        // 이 코드는 '/reponame/'을 basePath로 설정하려고 시도합니다.
+        // 이는 로컬 서버(Live Server)에서는 필요 없지만, GitHub Pages에서 필수입니다.
+        const repoName = pathSegments[0];
+        // 로컬 환경에서는 대부분 첫 세그먼트가 빈 문자열이거나 프로젝트 이름이 아니므로,
+        // Live Server를 사용한다면 'index.html' 파일을 기준으로 실행하는 것이 좋습니다.
         
-        // 간단한 상대 경로로 다시 회귀 (이전의 모든 복잡한 경로 계산 로직보다 더 안정적)
-        // 네비게이션 로직이 삽입되는 곳에서 최상위 index.html까지의 경로를 계산합니다.
-        
-        let rootPath = './';
-        if (path.includes('/페이지/')) {
-            // 현재 페이지가 하위 폴더에 있다면, 경로를 한 단계씩 올라갑니다.
-            const depth = pathSegments.length - pathSegments.indexOf('페이지') + 1;
-            rootPath = '';
-            for (let i = 0; i < depth; i++) {
-                rootPath += '../';
-            }
-        } else if (pathSegments.length > 1) {
-            // 루트 폴더 (index.html)에 있다면 './'만 필요합니다.
+        // 경로가 '/페이지/조편성/...' 처럼 시작하면, basePath는 '/'입니다.
+        // 경로가 '/myrepo/페이지/조편성/...' 처럼 시작하면, basePath는 '/myrepo/'입니다.
+        if (repoName !== '페이지' && repoName !== 'index.html') {
+             basePath = '/' + repoName + '/';
         }
-
-        // 🌟 최종적으로, 모든 링크를 현재 폴더 구조의 상대 경로를 사용하도록 고정합니다.
-        // 이 로직은 간단한 상대 경로를 직접 사용합니다.
     }
+    
+    // 🚨 로컬 개발 환경(Live Server 등)에서 사용하실 경우:
+    // 아래 basePath = '/'로 설정하는 것이 더 안정적입니다.
+    // basePath = '/'; 
 
+    
+    // 이 코드에서는 안정성을 위해 basePath 계산은 복잡하게 하지 않고,
+    // HTML 헤드에 <base href> 태그를 사용하는 것을 권장하지만,
+    // JS 내에서 최대한 경로를 고정하는 방식으로 작성합니다.
 
     const navHTML = `
         <nav>
-            <a href="index.html" class="logo">My Ocean View</a>
+            <a href="${basePath}index.html" class="logo">My Ocean View</a>
             <ul>
-                <li><a href="index.html">홈</a></li>
-                <li><a href="페이지/조편성/index.html">조편성</a></li>
-                <li><a href="페이지/학습지/index.html">학습지</a></li>
+                <li><a href="${basePath}index.html">홈</a></li>
+                <li><a href="${basePath}페이지/조편성/index.html">조편성</a></li>
+                <li><a href="${basePath}페이지/학습지/index.html">학습지</a></li>
             </ul>
         </nav>
     `;
 
-    // <body> 태그가 존재할 때만 네비게이션을 삽입
     if (document.body) {
         document.body.insertAdjacentHTML('afterbegin', navHTML);
     }
