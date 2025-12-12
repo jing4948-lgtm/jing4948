@@ -6,6 +6,39 @@
   --accent: #2a7bf6;
 }
 
+/* 🌟🌟🌟 학습지 페이지 글자색 강제 검은색 지정 시작 🌟🌟🌟 */
+/* 이 코드는 흰색 배경 카드 내부의 모든 텍스트가 명확하게 보이도록 합니다. */
+.app-wrap {
+    color: #333 !important;
+}
+
+/* 제목, 라벨, 인풋, 텍스트 등 주요 텍스트 요소를 검은색으로 재설정 */
+.app-wrap h1, 
+.app-wrap label, 
+.app-wrap legend, 
+.app-wrap select, 
+.app-wrap input, 
+.app-wrap textarea,
+.app-wrap p {
+    color: #333 !important;
+}
+
+/* 체크박스 라벨 텍스트도 명확하게 검은색으로 */
+.controls fieldset label {
+    color: #333 !important;
+}
+
+/* 인풋 필드 자체의 텍스트 색상 (선택 박스 등) */
+.controls select,
+.controls input[type="number"],
+.controls input[type="text"],
+.controls textarea {
+    color: #333 !important;
+    background-color: white !important;
+}
+/* 🌟🌟🌟 학습지 페이지 글자색 강제 검은색 지정 끝 🌟🌟🌟 */
+
+
 .app-wrap{ 
   max-width: 1100px; margin: 24px auto; padding: 0 16px;
 }
